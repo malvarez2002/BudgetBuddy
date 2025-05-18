@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Buddy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #00CFFF;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #FF198C;
+            padding: 20px;
+        }
+        header img {
+            height: 80px;
+        }
+        h1 {
+            margin: 10px 0 0 0;
+        }
+        main {
+            padding: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        input {
+            width: 200px;
+        }
+        button {
+            background-color: #00CFFF;
+            color: black;
+            cursor: pointer;
+        }
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="IMG_3359.jpg" alt="Budget Buddy Logo">
+        <h1>Budget Buddy</h1>
+    </header>
+
+    <main>
+        <h2>Track Your Expenses</h2>
+        <input type="text" id="category" placeholder="Category">
+        <input type="number" id="amount" placeholder="Amount">
+        <button onclick="addExpense()">Add Expense</button>
+
+        <canvas id="expenseChart" width="400" height="400"></canvas>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const expenses = [];
+
+        function addExpense() {
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (category && !isNaN(amount)) {
+                expenses.push({ category, amount });
+                updateChart();
+            }
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+
+            const categories = expenses.map(e => e.category);
+            const amounts = expenses.map(e => e.amount);
+
+            if (window.myChart) window.myChart.destroy();
+
+            window.myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: amounts,
+                        backgroundColor: [
+                            '#FF198C', '#00CFFF', '#FFC107', '#28A745', '#6610F2'
+                        ],
+                    }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>

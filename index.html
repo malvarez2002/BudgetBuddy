@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Budget Buddy</title>
+
+  <!-- Correct Amplify script -->
+<script src="aws-amplify.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #2563eb;
+    }
+
+    .section {
+      background: #fff;
+      padding: 20px;
+      margin-top: 30px;
+      max-width: 400px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Budget Buddy</h1>
+
+  <div class="section">
+    <h2>Register</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="registerBtn">Register</button>
+  </div>
+
+  <div class="section">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      //  Ensure Amplify is loaded
+      if (!window.Amplify) {
+        alert(" AWS Amplify did not load. Check your internet or CDN.");
+        return;
+      }
+
+      // Configure Amplify
+      Amplify.configure({
+        Auth: {
+          region: 'us-east-1',
+          userPoolId: 'us-east-1_RYCWOkg5W',
+          userPoolWebClientId: '4prv1hqu94iivqc8r0sso1dntm'
+        }
+      });
+
+      // Register
+      document.getElementById('registerBtn').onclick = async () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          await Amplify.Auth.signUp({
+            username: email,
+            password: password
+          });
+          alert(' Registration successful! Check your email to confirm.');
+        } catch (error) {
+          console.error('Registration error:', error);
+          alert('X ' + error.message);
+        }
+      };
+
+      // Login
+      document.getElementById('loginBtn').onclick = async () => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+          const user = await Amplify.Auth.signIn(email, password);
+          alert(' Logged in as: ' + user.username);
+          console.log('User:', user);
+        } catch (error) {
+          console.error('Login error:', error);
+          alert(' ' + error.message);
+        }
+      };
+    });
+  </script>
+</body>
+</html>
